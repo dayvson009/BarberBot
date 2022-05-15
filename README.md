@@ -50,6 +50,17 @@ Escolha qual serviço deseja realizar hoje:
 2- Escolha o dia => O barberbot mostra uma lista com os dias do mês atual
 3- Escolha seu horário => aqui vai mostrar uma lista só com os horários livres
 
+![msg 1 - 1º Acesso](https://user-images.githubusercontent.com/8366179/168482224-408f3f98-9fea-44b8-b9d3-d58f1f21945d.JPG)
+![msg 1 - Já possui cadastro](https://user-images.githubusercontent.com/8366179/168482225-60093526-48d0-4d49-ae61-a1a071860ccc.JPG)
+![msg 2](https://user-images.githubusercontent.com/8366179/168482226-5f1a985d-e126-480c-a1c9-502eb69b99d0.JPG)
+![msg 3](https://user-images.githubusercontent.com/8366179/168482227-e51b4f24-1ebb-41f0-a95c-eaf463a2ba75.JPG)
+![msg 4](https://user-images.githubusercontent.com/8366179/168482228-ced00617-523d-48fa-97a2-0d477ddf977e.JPG)
+![msg 5](https://user-images.githubusercontent.com/8366179/168482229-0da12d0d-b933-4007-8c47-e9fd60591a42.JPG)
+![msg 6 -Final](https://user-images.githubusercontent.com/8366179/168482231-9a7885e8-c2fe-4cd2-854b-2d14e4b556a2.JPG)
+![msg Sair](https://user-images.githubusercontent.com/8366179/168482232-ae67188f-1c28-4a75-a120-b922b3269b8f.JPG)
+![Whatsapp do cabelereiro](https://user-images.githubusercontent.com/8366179/168482233-d292718e-5c05-4dc3-b16f-9d3c5e023798.JPG)
+
+
 ### UPGRADES:
 
 Opção de cancelar agendamento
