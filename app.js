@@ -12,9 +12,27 @@ app.use(bodyParser.json())
  * Endpoint para Verificar se já é cliente
  * 
  */
-app.post('/save-message', async (req, res) => {
+app.post('/verify-client', async (req, res) => {
   
-  res.send("Pegou")
+  // Verificar se é cliente no banco de dados
+  
+  // Se já for cliente retorna true
+
+  // Se não for retorna false
+  // Salva no banco os dados iniciais (Nome, Whatsapp, ModeloCelular )
+
+  res.send(response)
+})
+
+/**
+ * Endpoint para atualizar dados do cliente
+ * 
+ */
+app.post('/update-client', async (req, res) => {
+  
+  // Recebe novo nome e salva no banco
+
+  res.send("Salvou")
 })
 
 /**
@@ -23,6 +41,35 @@ app.post('/save-message', async (req, res) => {
  */
 app.post('/save-message', async (req, res) => {
   
+  /**
+   * DadosWhatsappWeb: {
+   *  idMsg: msg.id.id
+   *  ,whatsappFrom: contact.from
+   *  ,whatsappTo: contact.to
+   *  ,dispositivo: msg.deviceType
+   *  ,mensagem: msg.body
+   * }
+  */
+
+  res.send("Pegou")
+})
+
+/**
+ * Endpoint para salvar a Resposta do dialogFlow na conversa do cliente
+ * 
+ */
+app.post('/save-response', async (req, res) => {
+  
+  /**
+   * Quando enviar para o dialogFlow e ele retornar a resposta, salvar no banco.
+   * Procurar a última conversa daquele número de contato
+   * e salvar em response
+   * DadosWhatsappWeb: {
+   *  ,whatsappFrom: contact.from
+   *  ,mensagem: respostaDialogFlow
+   * }
+  */
+
   res.send("Pegou")
 })
 

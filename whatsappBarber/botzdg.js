@@ -17,6 +17,8 @@ const io = socketIO(server);
 const httpAgent = new http.Agent({keepAlive: true});
 const httpsAgent = new https.Agent({keepAlive: true});
 
+const URL_BARBERBOT = 'http://10.0.3.123:3010'
+
 app.use(express.json());
 app.use(express.urlencoded({
 extended: true
@@ -74,166 +76,6 @@ client.on('disconnected', (reason) => {
     console.log('zapdasgalaxias.com.br BOT-ZDG Cliente desconectado', reason);
 });
 
-// Send message
-app.post('/zdg-message', [
-  body('number').notEmpty(),
-  body('message').notEmpty(),
-], async (req, res) => {
-  const errors = validationResult(req).formatWith(({
-    msg
-  }) => {
-    return msg;
-  });
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      status: false,
-      message: errors.mapped()
-    });
-  }
-
-  const number = req.body.number;
-  const numberDDI = number.substr(0, 2);
-  const numberDDD = number.substr(2, 2);
-  const numberUser = number.substr(-8, 8);
-  const message = req.body.message;
-
-  if (numberDDI !== "55") {
-    const numberZDG = number + "@c.us";
-    client.sendMessage(numberZDG, message).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT-ZDG Mensagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT-ZDG Mensagem não enviada',
-      response: err.text
-    });
-    });
-  }
-  else if (numberDDI === "55" && parseInt(numberDDD) <= 30) {
-    const numberZDG = "55" + numberDDD + "9" + numberUser + "@c.us";
-    client.sendMessage(numberZDG, message).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT-ZDG Mensagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT-ZDG Mensagem não enviada',
-      response: err.text
-    });
-    });
-  }
-  else if (numberDDI === "55" && parseInt(numberDDD) > 30) {
-    const numberZDG = "55" + numberDDD + numberUser + "@c.us";
-    client.sendMessage(numberZDG, message).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT-ZDG Mensagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT-ZDG Mensagem não enviada',
-      response: err.text
-    });
-    });
-  }
-});
-
-
-// Send media
-app.post('/zdg-media', [
-  body('number').notEmpty(),
-  body('caption').notEmpty(),
-  body('file').notEmpty(),
-], async (req, res) => {
-  const errors = validationResult(req).formatWith(({
-    msg
-  }) => {
-    return msg;
-  });
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({
-      status: false,
-      message: errors.mapped()
-    });
-  }
-
-  const number = req.body.number;
-  const numberDDI = number.substr(0, 2);
-  const numberDDD = number.substr(2, 2);
-  const numberUser = number.substr(-8, 8);
-  const caption = req.body.caption;
-  const fileUrl = req.body.file;
-
-  let mimetype;
-  const attachment = await axios.get(fileUrl, {
-    responseType: 'arraybuffer'
-  }).then(response => {
-    mimetype = response.headers['content-type'];
-    return response.data.toString('base64');
-  });
-
-  const media = new MessageMedia(mimetype, attachment, 'Media');
-
-  if (numberDDI !== "55") {
-    const numberZDG = number + "@c.us";
-    client.sendMessage(numberZDG, media, {caption: caption}).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT-ZDG Imagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT-ZDG Imagem não enviada',
-      response: err.text
-    });
-    });
-  }
-  else if (numberDDI === "55" && parseInt(numberDDD) <= 30) {
-    const numberZDG = "55" + numberDDD + "9" + numberUser + "@c.us";
-    client.sendMessage(numberZDG, media, {caption: caption}).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT-ZDG Imagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT-ZDG Imagem não enviada',
-      response: err.text
-    });
-    });
-  }
-  else if (numberDDI === "55" && parseInt(numberDDD) > 30) {
-    const numberZDG = "55" + numberDDD + numberUser + "@c.us";
-    client.sendMessage(numberZDG, media, {caption: caption}).then(response => {
-    res.status(200).json({
-      status: true,
-      message: 'BOT-ZDG Imagem enviada',
-      response: response
-    });
-    }).catch(err => {
-    res.status(500).json({
-      status: false,
-      message: 'BOT-ZDG Imagem não enviada',
-      response: err.text
-    });
-    });
-  }
-});
 
 /** ----------------- INICIO MEU CÓDIGO --------------- DV
  * String.prototype Cria um Metodo de uma String
@@ -416,48 +258,72 @@ const textOneLine = text => text.replace(/(\r\n|\n|\r)/gm, "§")
 // Aqui faz o inverso pega tudo que tiver § e quebra linha, foi uma gambiarra que fiz rsrsrs
 const textBreakLine = text => text.replace(/(§§|§|§§§)/gm, "\r\n")
 
+// Lista de contatos de clientes do dia atual
+const listaClientesDoDia = []
+
 client.on('message', async msg => {
-  if (msg.body == '!ping') {
-    msg.reply('pong');
-  }
-  if (msg.type != "e2e_notification" || msg.type != "call_log"){
-    console.log(msg.body)
+
+  // TODO adicionar as validações nescessárias (verificar se a mensagem não é de grupo msg.type == group seilá)
+  if (msg.type != "e2e_notification" || msg.type != "call_log" || msg.body !== null){
     
     const chat = await msg.getChat()
     const contact = await msg.getContact()
     const name = contact.name || contact.pushname
+  
+    // Verifica se o cliente já está na lista de clientes temporária e no banco
+    if(!listaClientesDoDia.includes(contact.number)){
+      
+      listaClientesDoDia.push(contact.number)
+  
+      const data = {
+        nome: name
+        ,whatsapp: contact.number
+        ,dispositivo: msg.deviceType
+      }
+  
+      const verifyClient = await axios.post(`${URL_BARBERBOT}/verify-client`, data, { httpAgent }) // Já verifica se não é cliente e adiciona no chatbot
+      
+      if(verifyClient){
+        msg.body = "Olá" // Entra no fluxo do dialogFlow Agendamento
+      }else{
+        msg.body = `não sou cliente ((${name}))` // Entra no fluxo do dialogFlow e manda uma variável do NOME
+      }
+      
+    }
+  
     
-    console.log("============== CONTACT ===================")
+    
+    
+    console.log("============== MESSAGE ===================")
     console.log(msg)
     console.log("============== CONTACT ===================")
     console.log(contact)
     console.log("================ CHAT ====================")
     console.log(chat)
-    if (msg.body !== null){
-      
-      //Tempo de espera de enviando mensagem
-      chat.sendStateTyping()    
-      await sleep(3000)
-      chat.clearState()
-      
-      const responseDialogFLow = `${await sendDialogFlow(msg.body, contact.number)}`
-      console.log(responseDialogFLow)
-      console.log(`--------------------Nova Mensagem--------------------`);
-      console.log(`Mensagem do cliente ${contact.number}: ${msg.body}`);
-      console.log(`Resposta do DialogFlow: ${responseDialogFLow}`);
-      
-      const responseDialogFLowOneLine = textOneLine(responseDialogFLow)
 
-      responseDialogFLow.includes('<imagemCreate>') ? await sendImage(msg.from, responseDialogFLow) : "";
-      responseDialogFLow.includes('<text>')         ? msg.reply(msg.from, getContentTag(responseDialogFLow,'text')) : ""
-      responseDialogFLow.includes('<buttonCreate>') ? await sendButton(msg.from, responseDialogFLow) : ""
-      responseDialogFLow.includes('<listCreate>')   ? await sendList(msg.from, responseDialogFLow) : ""
-      responseDialogFLow.includes('<GET>')   ? await requestGET(msg.from, responseDialogFLow) : ""
-      responseDialogFLow.includes('<POST>')   ? await requestPOST(msg.from, responseDialogFLow) : ""
-      !responseDialogFLow.includes("</") ? await client.sendMessage(msg.from, responseDialogFLow) : ""
+    //Tempo de espera de enviando mensagem
+    chat.sendStateTyping()    
+    await sleep(3000)
+    chat.clearState()
+    
+    const responseDialogFLow = `${await sendDialogFlow(msg.body, contact.number)}`
+    
+    console.log(`--------------------Nova Mensagem--------------------`);
+    console.log(`Mensagem do cliente ${contact.number}: ${msg.body}`);
+    console.log(`Resposta do DialogFlow:`);
+    console.log(responseDialogFLow);
+    
+    const responseDialogFLowOneLine = textOneLine(responseDialogFLow)
 
-      console.log('FIM')
-    }
+    responseDialogFLow.includes('<imagemCreate>') ? await sendImage(msg.from, responseDialogFLow) : "";
+    responseDialogFLow.includes('<text>')         ? msg.reply(msg.from, getContentTag(responseDialogFLow,'text')) : ""
+    responseDialogFLow.includes('<buttonCreate>') ? await sendButton(msg.from, responseDialogFLow) : ""
+    responseDialogFLow.includes('<listCreate>')   ? await sendList(msg.from, responseDialogFLow) : ""
+    responseDialogFLow.includes('<GET>')   ? await requestGET(msg.from, responseDialogFLow) : ""
+    responseDialogFLow.includes('<POST>')   ? await requestPOST(msg.from, responseDialogFLow) : ""
+    !responseDialogFLow.includes("</") ? await client.sendMessage(msg.from, responseDialogFLow) : ""
+
+    console.log('-----------------------------------------------------')
   }
 });
 // ----------------- FIM IMPLEMENTAÇÂO ---------------------
