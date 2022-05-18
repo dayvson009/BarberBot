@@ -9,6 +9,15 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 /**
+ * Endpoint para Verificar se já é cliente
+ * 
+ */
+app.post('/save-message', async (req, res) => {
+  
+  res.send("Pegou")
+})
+
+/**
  * Endpoint para salvar Conversas
  * 
  */
