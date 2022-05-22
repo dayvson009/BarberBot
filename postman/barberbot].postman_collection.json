@@ -1,0 +1,194 @@
+{
+	"id": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+	"name": "barberbot]",
+	"description": "",
+	"order": [
+		"33bcc8f7-907e-d028-0364-4e5be6b85026",
+		"9fb344df-794d-2179-a757-73979665fb4d",
+		"9bc20e03-4cc4-bdae-10a3-72763795c0ea",
+		"afb23a3f-b7d6-731a-b125-9786be54f08a",
+		"91e5d6c2-d3fa-0e64-0b58-6eda581a1cb1",
+		"f32f1d2d-b833-6b92-67e7-4efa0b6ba1a1"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1653138639254,
+	"owner": "110196",
+	"public": false,
+	"requests": [
+		{
+			"id": "33bcc8f7-907e-d028-0364-4e5be6b85026",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/verify-client",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653236103516,
+			"name": "verifica se é cliente",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{\n\t\"nome\": \"Vinicius\"\n\t,\"whatsapp\": \"5581983012863\"\n\t,\"dispositivo\": \"android\"\n}"
+		},
+		{
+			"id": "91e5d6c2-d3fa-0e64-0b58-6eda581a1cb1",
+			"headers": "",
+			"headerData": [],
+			"url": "localhost:3010/get-datas?whatsapp=5581984319706",
+			"queryParams": [
+				{
+					"key": "whatsapp",
+					"value": "5581984319706",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": null,
+			"dataMode": "params",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653232209448,
+			"name": "pegar datas disponiveis para agendamento",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": []
+		},
+		{
+			"id": "9bc20e03-4cc4-bdae-10a3-72763795c0ea",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/save-message",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653236293349,
+			"name": "salvar mensagem",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{\r\n   \"whatsappFrom\": \"5581983012863\"\r\n   ,\"whatsappTo\": \"5581984319706\"\r\n   ,\"dispositivo\": \"ios\"\r\n   ,\"mensagem\": \"Posso agendar hoje?\"\r\n  }"
+		},
+		{
+			"id": "9fb344df-794d-2179-a757-73979665fb4d",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/update-client",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653236102530,
+			"name": "Atualizar nome Cliente",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{\n\t\"nome\": \"Thalita silva\"\n\t,\"whatsapp\": \"5581983012863\"\n}"
+		},
+		{
+			"id": "afb23a3f-b7d6-731a-b125-9786be54f08a",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/save-response",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653237026466,
+			"name": "resposta da mensagem",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{\r\n   \"whatsappFrom\": \"5581983012863\"\r\n   ,\"mensagem\": \"Não foda-se\"\r\n}"
+		},
+		{
+			"id": "f32f1d2d-b833-6b92-67e7-4efa0b6ba1a1",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/get-hours",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653235870977,
+			"name": "pegar horario livre agendamento",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{ \n\t\"whatsappTo\": \"5581984319706\"\n\t,\"data\": \"30/05/2022\"\n\t,\"dia\": \"segunda\"\n}"
+		}
+	]
+}

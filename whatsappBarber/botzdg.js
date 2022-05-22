@@ -281,7 +281,7 @@ client.on('message', async msg => {
         ,dispositivo: msg.deviceType
       }
   
-      const verifyClient = await axios.post(`${URL_BARBERBOT}/verify-client`, data, { httpAgent }) // Já verifica se não é cliente e adiciona no chatbot
+      const verifyClient = await axios.post(`${URL_BARBERBOT}/verify-client`, data, { httpAgent })
       
       if(verifyClient){
         msg.body = "Olá" // Entra no fluxo do dialogFlow Agendamento
