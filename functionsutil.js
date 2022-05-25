@@ -58,9 +58,11 @@ function servicosporintervalo(a,b,i){
 const datasParaAgendamento = (allAgendamentos, jornadaTrabalho) => {
 
   horariofuncionamento = {}
-
   jornadaTrabalho.forEach(item => {
-    if(item.horaintervalosaida == null){
+    console.log(item.dia, item.horaintervalosaida)
+    console.log(typeof item.horaintervalosaida)
+    
+    if(item.horaintervalosaida == null || item.horaintervalosaida == ''){
       total = servicosporintervalo(item.horaentrada, item.horasaida, item.intervaloagendamento)
       diaSemana = retira_acentos(Object.values(item.dia).join(''))
     }else{
@@ -133,15 +135,16 @@ const horasDisponiveisDoDia = (item, horasOcupadas) => {
 
   if(item.horaintervalosaida == null){
     expediente1 = horariosIntervalos(item.horaentrada, item.horasaida, item.intervaloagendamento)
-    expediente1
+    horariosDisponiveis = expediente1
   }else{
     expediente1 = horariosIntervalos(item.horaentrada, item.horaintervalosaida, item.intervaloagendamento)
     expediente2 = horariosIntervalos(item.horaintervalovolta, item.horasaida, item.intervaloagendamento)
     horariosDisponiveis = expediente1.concat(expediente2)
   }
 
-  horasOcupadas.forEach(item => {
-    horariosDisponiveis.splice(horariosDisponiveis.indexOf(item.horamarcada), 1)
+  // Remove as horas que já foram marcadas
+  horasOcupadas.forEach(agenda => {
+    horariosDisponiveis.splice(horariosDisponiveis.indexOf(agenda.horamarcada), 1)
   })
 
   return horariosDisponiveis

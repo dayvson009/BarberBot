@@ -11,6 +11,4 @@ app.use(bodyParser.json())
 
 app.use('/',endpoint)
 
-// db.verifyClientExist()
-
 app.listen(port, console.log("Aplicação Rodando na porta ", port))
