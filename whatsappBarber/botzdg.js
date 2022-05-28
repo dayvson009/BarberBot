@@ -17,7 +17,8 @@ const io = socketIO(server);
 const httpAgent = new http.Agent({keepAlive: true});
 const httpsAgent = new https.Agent({keepAlive: true});
 
-const URL_BARBERBOT = 'http://10.0.3.123:3010'
+const URL_BARBERBOT = 'http://10.0.0.102:3010'
+const URL_DIALOGFLOW = 'http://10.0.0.102:3020'
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -35,7 +36,7 @@ app.use("/", express.static(__dirname + "/"))
 // });
 
 const client = new Client({
-  // authStrategy: new LocalAuth({ clientId: 'bot-zdg' }),
+  // authStrategy: new LocalAuth({ clientId: 'BarberBot' }),
   puppeteer: { headless: true,
     args: [
       '--no-sandbox',
@@ -53,27 +54,27 @@ client.initialize();
 
 client.on('qr', (qr) => {
     qrcode.generate(qr, {small: true});
-    console.log('zapdasgalaxias.com.br BOT-ZDG QRCode recebido', qr);
+    console.log('zapdasgalaxias.com.br BarberBot QRCode recebido', qr);
 });
 
 client.on('authenticated', () => {
-    console.log('zapdasgalaxias.com.br BOT-ZDG Autenticado');
+    console.log('zapdasgalaxias.com.br BarberBot Autenticado');
 });
 
 client.on('auth_failure', msg => {
-    console.error('zapdasgalaxias.com.br BOT-ZDG Falha na autenticação', msg);
+    console.error('zapdasgalaxias.com.br BarberBot Falha na autenticação', msg);
 });
 
 client.on('ready', () => {
-    console.log('zapdasgalaxias.com.br BOT-ZDG Dispositivo pronto');
+    console.log('zapdasgalaxias.com.br BarberBot Dispositivo pronto');
 });
 
 client.on('change_state', state => {
-    console.log('zapdasgalaxias.com.br BOT-ZDG Status de conexão: ', state );
+    console.log('zapdasgalaxias.com.br BarberBot Status de conexão: ', state );
 });
 
 client.on('disconnected', (reason) => {
-    console.log('zapdasgalaxias.com.br BOT-ZDG Cliente desconectado', reason);
+    console.log('zapdasgalaxias.com.br BarberBot Cliente desconectado', reason);
 });
 
 
@@ -82,13 +83,12 @@ client.on('disconnected', (reason) => {
  * A função é chamada da seguinte maneira: string.funcao(param)
  * Nesta função ele da um split em tags e retorna o conteúdo de dentro
  */
-// String.prototype.getContentTag = function(tag) {
 
-//   let content = String(this).split(`<${tag}>`).slice(1)
-//   content = content.map(item => item.split(`</${tag}>`)[0])
-//   return content.length > 1 ? content : content[0]
 
-// }
+// Talvez não vamos precisar disso, mas deixa aqui - serve para remover quebra de linhas e substitui por §
+const textOneLine = text => text.replace(/(\r\n|\n|\r)/gm, "§")
+// Aqui faz o inverso pega tudo que tiver § e quebra linha, foi uma gambiarra que fiz rsrsrs
+const textBreakLine = text => text.replace(/(§§|§|§§§)/gm, "\r\n")
 
 /**
  * Verifica se um número possui whatsapp ou não
@@ -99,6 +99,15 @@ client.on('disconnected', (reason) => {
   const isRegistered = await client.isRegisteredUser(number);
   return isRegistered;
 }
+
+/**
+ * EndPoint pra enviar mensagens
+ * @param {object} {[}'558184319706', '558100112233']
+ */
+app.post('/send-message', async (req, res) => {
+  console.log(req.body)
+  client.sendMessage(phoneNumberFormatter(req.body.whatsapp), req.body.message)
+})
 
 /**
  * EndPoint pra verificar se o número existe ou não
@@ -149,7 +158,7 @@ const sendDialogFlow = async (mensagem, numero) => {
     "userId": numero
   }
   
-  const resp = await axios.post('http://10.0.3.123:3030/text_query', body, { httpAgent })
+  const resp = await axios.post(`${URL_DIALOGFLOW}/text_query`, body, { httpAgent })
   
   return resp.data
 
@@ -226,11 +235,6 @@ const sendList = async (phone, msg) => {
   const listItens = [{title:listHeaderItens, rows:[]}]
 
   listItens[0].rows = typeof lists != 'string' ? lists.map((item, index) => ({title:item, description: listSub[index] || ""})) : [{title:lists, description: listSub[0] || ""}]
-  console.log(listContent)
-  console.log(listAction)
-  console.log(listItens)
-  console.log(listTitle)
-  console.log(listFooter)
   const list = new List(listContent,listAction,listItens,listTitle,listFooter);
 
   const number = phoneNumberFormatter(phone);
@@ -253,18 +257,29 @@ const sendImage = async (phone, msg) => {
   await client.sendMessage(number, media, { caption: imageCaption })
 };
 
-// Talvez não vamos precisar disso, mas deixa aqui - serve para remover quebra de linhas e substitui por §
-const textOneLine = text => text.replace(/(\r\n|\n|\r)/gm, "§")
-// Aqui faz o inverso pega tudo que tiver § e quebra linha, foi uma gambiarra que fiz rsrsrs
-const textBreakLine = text => text.replace(/(§§|§|§§§)/gm, "\r\n")
+
 
 // Lista de contatos de clientes do dia atual
 const listaClientesDoDia = []
 
-client.on('message', async msg => {
+let sistemaAtivo = false;
 
+app.get('/paused', async (req, res) => {
+
+  if(req.query.ativar == 's')
+    sistemaAtivo = true
+  else
+    sistemaAtivo = false
+
+  res.send(sistemaAtivo)
+})
+
+
+/* onmessage */
+client.on('message', async msg => {
+  console.log(msg.type)
   // TODO adicionar as validações nescessárias (verificar se a mensagem não é de grupo msg.type == group seilá)
-  if (msg.type != "e2e_notification" || msg.type != "call_log" || msg.body !== null){
+  if (msg.type === 'chat' && msg.body !== null && sistemaAtivo){
     
     const chat = await msg.getChat()
     const contact = await msg.getContact()
@@ -280,32 +295,30 @@ client.on('message', async msg => {
         ,whatsapp: contact.number
         ,dispositivo: msg.deviceType
       }
-  
+
       const verifyClient = await axios.post(`${URL_BARBERBOT}/verify-client`, data, { httpAgent })
-      
+      console.log(verifyClient)
       if(verifyClient){
-        msg.body = "Olá" // Entra no fluxo do dialogFlow Agendamento
+        msg.body = `BemVindoDeVolta Nome ${name}` // Entra no fluxo do dialogFlow Agendamento
       }else{
-        msg.body = `não sou cliente ((${name}))` // Entra no fluxo do dialogFlow e manda uma variável do NOME
+        msg.body = `NovoCliente Nome ${name}` // Entra no fluxo do dialogFlow e manda uma variável do NOME
       }
-      
+
     }
   
-    
-    
     
     console.log("============== MESSAGE ===================")
     console.log(msg)
     console.log("============== CONTACT ===================")
-    console.log(contact)
+    // console.log(contact)
     console.log("================ CHAT ====================")
-    console.log(chat)
+    // console.log(chat)
 
     //Tempo de espera de enviando mensagem
     chat.sendStateTyping()    
     await sleep(3000)
     chat.clearState()
-    
+    /*
     const responseDialogFLow = `${await sendDialogFlow(msg.body, contact.number)}`
     
     console.log(`--------------------Nova Mensagem--------------------`);
@@ -313,7 +326,7 @@ client.on('message', async msg => {
     console.log(`Resposta do DialogFlow:`);
     console.log(responseDialogFLow);
     
-    const responseDialogFLowOneLine = textOneLine(responseDialogFLow)
+    // const responseDialogFLowOneLine = textOneLine(responseDialogFLow)
 
     responseDialogFLow.includes('<imagemCreate>') ? await sendImage(msg.from, responseDialogFLow) : "";
     responseDialogFLow.includes('<text>')         ? msg.reply(msg.from, getContentTag(responseDialogFLow,'text')) : ""
@@ -322,7 +335,7 @@ client.on('message', async msg => {
     responseDialogFLow.includes('<GET>')   ? await requestGET(msg.from, responseDialogFLow) : ""
     responseDialogFLow.includes('<POST>')   ? await requestPOST(msg.from, responseDialogFLow) : ""
     !responseDialogFLow.includes("</") ? await client.sendMessage(msg.from, responseDialogFLow) : ""
-
+    */
     console.log('-----------------------------------------------------')
   }
 });

@@ -1,6 +1,6 @@
 const db = require('./conection/consultas')
 // const axios = require('axios')
-const URLWHATSAPP = 'http://10.0.3.123:3019'
+const URLWHATSAPP = 'http://10.0.0.102:3019'
 
 const updateStatusMessages = () => {
   console.log('cuidado ao olhar pra cima')
@@ -194,10 +194,11 @@ const refresListBarber = async (whatsappTo) => {
   }
 
   data = {
-    telefone: whatsappTo,
+    whatsapp: whatsappTo,
     message: dataMessage
   }
-  // axios.post(`${URLWHATSAPP}/send-message`, data)
+  
+  axios.post(`${URLWHATSAPP}/send-message`, data)
 
   return dataMessage
 
