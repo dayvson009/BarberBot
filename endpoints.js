@@ -52,13 +52,14 @@ router.post('/save-response', async (req, res) => {
   res.send("Resposta da mensagem anterior inserida")
 })
 
+
 /**
  * Endpoint para buscar as datas disponivéis do agendamento
  * pegar só 30 dias
  */
 router.get('/get-datas', async (req, res) => {
   
-  const agend = await db.getDateAvailable(req.query.whatsapp)
+  const agend = await db.getDateFree(req.query.whatsapp)
   const funcion = await db.getFuncionamento(req.query.whatsapp)
 
   const datesLivres = func.datasParaAgendamento(agend, funcion)
@@ -66,6 +67,7 @@ router.get('/get-datas', async (req, res) => {
   // TODO: Retornar já com a formatação de lista do whatsapp
   res.send(datesLivres)
 })
+
 
 /**
  * Endpoint para buscar horários da data escolhida disponivéis do agendamento
@@ -75,7 +77,7 @@ router.post('/get-hours', async (req, res) => {
   
   const funcionamentoDia = await db.getFuncionamento(req.body.whatsappTo)
   console.log(funcionamentoDia)
-  const hoursDay = await db.getDayAvailable(req.body)
+  const hoursDay = await db.getDayHoursFree(req.body)
   console.log(hoursDay)
 
   const hourLivre = func.horasDisponiveisDoDia(funcionamentoDia[0],hoursDay)
@@ -89,28 +91,33 @@ router.post('/get-hours', async (req, res) => {
  * TODO Verificar antes se alguém já escolheu a hora selecionada (evitar duplicidade)
  * 
  */
-router.post('/save', async (req, res) => {
+router.post('/save-date-time-appointment', async (req, res) => {
+  const free = await db.verifyDateHoursFree(req.body)
+  let appointment = 'Hora não disponível'
+  if(free.length == 0)
+    appointment = await db.saveDateTimeAppointment(req.body)
   
-  res.send("Pegou")
+  if(func.verifyCurrentDate(req.body.data))
+    func.refresListBarber(req.body.whatsappTo)
+
+  res.send(appointment)
 })
 
 /**
  * Endpoint salvar o lembrete
- * 
  */
-router.post('/add-reminder', async (req, res) => {
+router.post('/reminder-me', async (req, res) => {
+  const getHourReminder = func.getHourReminder(req.body)
   
-  res.send("Pegou")
+  await db.insertReminderMe(req.body,getHourReminder)
+  res.send("Seu lembrete foi agendado às "+ getHourReminder)
 })
 
 /**
  * Endpoint disparar para o cabeleireiro a lista atualizada de agendamentos do dia
- * 
  */
-router.post('/send-list-scheduling', async (req, res) => {
-  
-  res.send("Pegou")
-})
+router.post('/send-list-scheduling', async (req, res) => res.send(await func.refresListBarber(req.body.whatsappTo)))
+
 
 /**
  * Aplicação para verficiar o status das conversas

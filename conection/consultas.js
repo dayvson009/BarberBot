@@ -108,38 +108,8 @@ const saveResponseMessage = async ({mensagem, whatsappFrom}) => {
   }finally{
   }
 }
-/*
-//Pegar dados do cliente pelo whatsapp
-const getDateAvailable = async ({whatsappTo}) => {
-  let consulta;
-  
-  const queryAgendamento = `select * from agendamento a 
-inner join barbearias b on b.codbarbearia = a.codbarbearia 
-where b.whatsapp = '${whatsappTo}'`;
 
-  const queryFuncionamento = `select f.dia, b.intervaloagendamento, f.horaentrada, f.horaintervalosaida, f.horaintervalovolta, f.horasaida from funcionamento f 
-inner join barbearias b on b.codbarbearia = f.codbarbearia 
-where b.whatsapp = '${whatsappTo}'`;
-  
-  try {
-
-    consultaAgendamento = await db.query(queryAgendamento)
-    console.log(consultaAgendamento)
-    // Object.assign(consulta, consultaAgendamento.rows)
-    // console.log("------------------")
-    // console.log(consulta)
-    // consultaFuncionamento = await db.query(queryFuncionamento)
-    // Object.assign(consulta, consultaFuncionamento.rows)
-    
-  } catch(err){
-
-    console.log(err)
-
-  } finally{
-    return consulta
-  }
-}*/
-const getDateAvailable = async whatsappTo => {
+const getDateFree = async whatsappTo => {
   let consulta;
   
   const query = `select a.datamarcada, count(a.codagendamento) from agendamento a 
@@ -160,6 +130,7 @@ group by  a.datamarcada`;
   }
 }
 
+// Pegar Horario de funcionamento da barbearia
 const getFuncionamento = async whatsappTo => {
   let consulta;
   
@@ -180,7 +151,8 @@ where b.whatsapp = '${whatsappTo}'`;
   }
 }
 
-const getDayAvailable = async ({whatsappTo, data}) => {
+// Pegar hora livre do agendamento
+const getDayHoursFree = async ({whatsappTo, data}) => {
   let consulta;
   
   const query = `select a.horamarcada from agendamento a 
@@ -200,6 +172,89 @@ where b.whatsapp = '${whatsappTo}' and a.datamarcada = '${data}'`;
   }
 }
 
+// Verifica se a data hora está livre do agendamento para não da conflito em saveDateTimeAppointment
+const verifyDateHoursFree = async ({whatsappTo, whatsappFrom, hora, data}) => {
+  let consulta;
+  
+  const query = `select a.horamarcada from agendamento a 
+inner join barbearias b on b.codbarbearia = a.codbarbearia 
+where b.whatsapp = '${whatsappTo}' and a.datamarcada = '${data}' and horamarcada = '${hora}'`;
+  
+  try {
+
+    consulta = await db.query(query)
+    
+  } catch(err){
+
+    console.log(err)
+
+  } finally{
+    return consulta.rows
+  }
+}
+
+// Salva Data Hora Marcada
+const saveDateTimeAppointment = async ({whatsappTo, whatsappFrom, hora, data}) => {
+  let insert, retorno
+
+  const sql = `INSERT INTO public.agendamento (codbarbearia,codcliente,datahoraagendamento,status,horamarcada,datamarcada)
+  VALUES ((select b.codbarbearia from barbearias b where whatsapp = '${whatsappTo}'),(select c.codcliente from cliente c where whatsapp = '${whatsappFrom}'),NOW(),'A','${hora}','${data}')`;
+
+  try{
+    insert = await db.query(sql)
+    console.log(insert.rowCount > 0 ? "Novo Agendamento Inserido" : "Não foi possível inserir Agendamento")
+    retorno = insert.rowCount > 0 ? "Novo Agendamento Inserido" : "Não foi possível inserir Agendamento";
+  }catch(err){
+    console.log(err)
+    console.log("ERRO: ao inserir agendamento")
+    retorno = 'erro';
+  }finally{
+    return retorno
+  }
+}
+
+//Inserir um lembrete de agendamento
+const insertReminderMe = async ({whatsappTo, whatsappFrom, hora, data}, lembrete) => {
+  let update
+  
+  const sql = `UPDATE agendamento set lembrete=to_timestamp('${data} ${lembrete}', 'DD/MM/YYYY HH:MI')
+WHERE codbarbearia=(select b.codbarbearia from barbearias b where whatsapp = '${whatsappTo}') 
+and codcliente = (select c.codcliente from cliente c where whatsapp = '${whatsappFrom}')
+and datamarcada = '${data}' and horamarcada = '${hora}'`;
+  
+  try{
+    update = await db.query(sql)
+    
+    console.log(update.rowCount > 0 ? "Resposta Atualizada" : "Não foi possível atualizar Resposta")
+
+  }catch(err){
+    console.log(err)
+    console.log("ERRO: ao salvar resposta")
+  }finally{
+  }
+}
+
+//Pegar todos agendamentos do dia da barbearia
+const getAllDateTimeAppointment = async whatsappTo => {
+  let consulta;
+  
+  const query = `select a.codagendamento, c.nome, a.horamarcada, a.datamarcada from agendamento a 
+inner join barbearias b on b.codbarbearia = a.codbarbearia
+inner join cliente c on a.codcliente = c.codcliente
+where b.whatsapp = '${whatsappTo}' and a.datamarcada = to_char(now(), 'DD/MM/YYYY')`;
+  
+  try {
+
+    consulta = await db.query(query)
+    
+  } catch(err){
+
+    console.log(err)
+
+  } finally{
+    return consulta.rows
+  }
+}
 
 /*
 const deleteValues = async (id) => {
@@ -220,7 +275,11 @@ module.exports = {
   ,updateClient
   ,saveMessageChat
   ,saveResponseMessage
-  ,getDateAvailable
+  ,getDateFree
   ,getFuncionamento
-  ,getDayAvailable
+  ,getDayHoursFree
+  ,verifyDateHoursFree
+  ,saveDateTimeAppointment
+  ,insertReminderMe
+  ,getAllDateTimeAppointment
 }

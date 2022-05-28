@@ -1,3 +1,7 @@
+const db = require('./conection/consultas')
+// const axios = require('axios')
+const URLWHATSAPP = 'http://10.0.3.123:3019'
+
 const updateStatusMessages = () => {
   console.log('cuidado ao olhar pra cima')
 }
@@ -34,21 +38,21 @@ function servicosporintervalo(a,b,i){
     totalporperiodo = 0
     w = true;
     while(w){
-    ha = parseInt(a.split(':')[0])
-    ma = parseInt(a.split(':')[1])
-    hb = parseInt(b.split(':')[0])
-    mb = b.split(':')[1]
-    
-    
-    min = ma+i;
-    (min >= 60) && ha++ && (min = min - 60);
-    
-    w = parseInt(ha+''+min)<parseInt((hb+''+mb))
-    if(w)
-        totalporperiodo++
-    
-    a=ha+':'+min
-    b=hb+':'+mb
+      ha = parseInt(a.split(':')[0])
+      ma = parseInt(a.split(':')[1])
+      hb = parseInt(b.split(':')[0])
+      mb = b.split(':')[1]
+      
+      
+      min = ma+i;
+      (min >= 60) && ha++ && (min = min - 60);
+      
+      w = parseInt(ha+''+min)<parseInt((hb+''+mb))
+      if(w)
+          totalporperiodo++
+      
+      a=ha+':'+min
+      b=hb+':'+mb
     
     }
 
@@ -101,28 +105,29 @@ function horariosIntervalos(a,b,i){
     totalporperiodo = 0
     w = true;
     while(w){
-    ha = parseInt(a.split(':')[0])
-    ma = parseInt(a.split(':')[1])
-    hb = parseInt(b.split(':')[0])
-    mb = b.split(':')[1]
-    
-    min = ma+i;
-    (min >= 60) && ha++ && (min = min - 60);
+      ha = parseInt(a.split(':')[0])
+      ma = parseInt(a.split(':')[1])
+      hb = parseInt(b.split(':')[0])
+      mb = b.split(':')[1]
+      
+      min = ma+i;
+      (min >= 60) && ha++ && (min = min - 60);
 
-     w = parseInt(ha+''+min)<parseInt((hb+''+mb))
-    if(w){
-      let zeroFrenteH = a.split(':')[0]
-      let zeroAtrasM = a.split(':')[1]
+       w = parseInt(ha+''+min)<parseInt((hb+''+mb))
+      if(w){
+        let hour = a.split(':')[0]
+        let minutes = a.split(':')[1]
 
-      if(zeroFrenteH.length == 1)
-        zeroFrenteH = '0'+zeroFrenteH
-      if(zeroAtrasM.length == 1)
-        zeroAtrasM = zeroAtrasM+'0'
+        // Verifica se só possui um número, e adiciona um zero a frente
+        if(hour.length == 1)
+          hour = '0'+hour
+        if(minutes.length == 1)
+          minutes = '0'+minutes
 
-      a = zeroFrenteH+':'+zeroAtrasM
-      horasFuncionamento.push(a)
-    }
-    
+        a = hour+':'+minutes
+        horasFuncionamento.push(a)
+      }
+      
       a=ha+':'+min
       b=hb+':'+mb
     
@@ -151,9 +156,59 @@ const horasDisponiveisDoDia = (item, horasOcupadas) => {
 
 }
 
+const getHourReminder = ({hora,lembrete}) => {
+  let h,m;
+  [h,m] = hora.split(':')
+  m = m-lembrete
+  if(m<0){
+    h--
+    m = m+60
+  }
+  // Adiciona o Zero a Frente da hora, e Zero atrás do Min
+  if((h+'').length == 1) h = '0'+h
+  if((m+'').length == 1) m = '0'+m
+  
+  return h+':'+m
+
+}
+
+const verifyCurrentDate = (data, currentDate = new Date()) => 
+  data == currentDate.toLocaleString('pt-BR',{dateStyle:'short'})
+
+const refresListBarber = async (whatsappTo) => {
+  const agendamentos = await db.getAllDateTimeAppointment(whatsappTo)
+  let dataMessage;
+
+  if(agendamentos.length > 0){
+    // Cria uma lista de horários agendados
+    dataMessage = `
+    ------${agendamentos[0].datamarcada}-----
+    \n\r*COD*--*HORAS*--*NOME*`
+
+    agendamentos.forEach(item => {
+      dataMessage += `\n\r(${item.codagendamento})--${item.horamarcada}--${item.nome}`
+    })
+
+  }else{
+    dataMessage = 'Nenhum Agendamento para hoje até o momento!'
+  }
+
+  data = {
+    telefone: whatsappTo,
+    message: dataMessage
+  }
+  // axios.post(`${URLWHATSAPP}/send-message`, data)
+
+  return dataMessage
+
+}
+
 module.exports = {
   updateStatusMessages
   ,verifyTimeScheduling
   ,datasParaAgendamento
   ,horasDisponiveisDoDia
+  ,getHourReminder
+  ,verifyCurrentDate
+  ,refresListBarber
 }
