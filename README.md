@@ -74,3 +74,7 @@ O barbeiro também pode optar por:
 Ver agenda do dia ou de uma data especifica
 Cancelar um agendamento, ele informa só o ID e a confirmação
 pode escolher a opção de Fechado ( não vai receber agendamentos nesse período)
+
+### Response whatsappweb
+
+![responseWhatsapp](https://user-images.githubusercontent.com/8366179/172029899-fd0a8bd4-ad22-43ce-b3a8-4530d761cb30.png)
