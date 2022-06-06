@@ -10,14 +10,30 @@ const router = express.Router();
  */
 router.post('/verify-client', async (req, res) => {
   const {nome, whatsapp, dispositivo} = req.body
+
+  const msgCliente = await db.verifyClientExist(whatsapp)
  
   // Verifica se é cliente no banco de dados
-  if(await db.verifyClientExist(whatsapp)){
-    res.send(true)
+  if(msgCliente.length > 0){
+    res.send(msgCliente[0].nome)
   }else{
     db.saveNewClient(req.body)
     res.send(false)
   }
+})
+
+/**
+ * Pega o nome da Barbearia
+ */
+router.get('/get-barber', async (req, res) => {
+ 
+  const barbearia = await db.getBarber(req.query.barber)
+
+  console.log(barbearia)
+  console.log(barbearia[0].nomebarbearia)
+  
+  res.send(barbearia[0].nomebarbearia)
+  
 })
 
 
@@ -25,8 +41,8 @@ router.post('/verify-client', async (req, res) => {
  * Endpoint para atualizar dados do cliente
  */
 router.post('/update-client', async (req, res) => {
-  const {whatsapp, nome} = req.body
-  await db.updateClient(whatsapp, nome)
+  const {whatsappTo, nome} = req.body
+  await db.updateClient(whatsappTo, nome)
   res.send('atualizando cliente')
 })
 
@@ -57,15 +73,34 @@ router.post('/save-response', async (req, res) => {
  * Endpoint para buscar as datas disponivéis do agendamento
  * pegar só 30 dias
  */
-router.get('/get-datas', async (req, res) => {
+router.post('/get-datas', async (req, res) => {
   
-  const agend = await db.getDateFree(req.query.whatsapp)
-  const funcion = await db.getFuncionamento(req.query.whatsapp)
+  let {whatsappTo, mensagem} = req.body
 
-  const datesLivres = func.datasParaAgendamento(agend, funcion)
-  console.log(datesLivres)
-  // TODO: Retornar já com a formatação de lista do whatsapp
-  res.send(datesLivres)
+  console.log(req.body)
+
+  const agend = await db.getDateFree(whatsappTo)
+  const funcion = await db.getFuncionamento(whatsappTo)
+
+  const datasLivres = func.datasParaAgendamento(agend, funcion)
+  console.log(datasLivres)
+
+  const list = {
+    type : "list"
+    ,listContent : mensagem
+    ,listAction : "Escolha a Data aqui 📅 👈"
+    ,listItens : [{title:"Escolha uma data abaixo", rows:[]}]
+    ,listTitle : ""
+    ,listFooter : "Selecione um item"
+  }
+
+  list.listItens[0].rows = datasLivres.map(item => ({title:item.data, description: ""}))
+
+  console.log(list)
+
+  console.log("Enviando Lista", new Date())
+
+  res.send(list)
 })
 
 
@@ -74,16 +109,25 @@ router.get('/get-datas', async (req, res) => {
  * 
  */
 router.post('/get-hours', async (req, res) => {
-  
+    
   const funcionamentoDia = await db.getFuncionamento(req.body.whatsappTo)
-  console.log(funcionamentoDia)
   const hoursDay = await db.getDayHoursFree(req.body)
-  console.log(hoursDay)
-
+  const msg = req.body.mensagem
   const hourLivre = func.horasDisponiveisDoDia(funcionamentoDia[0],hoursDay)
   console.log(hourLivre)
 
-  res.send(hourLivre)
+  const list = {
+    type : "list"
+    ,listContent : msg
+    ,listAction : "Escolha a Hora aqui ⏱ 👈"
+    ,listItens : [{title:"Escolha uma data abaixo", rows:[]}]
+    ,listTitle : ""
+    ,listFooter : "Selecione um item"
+  }
+
+  list.listItens[0].rows = hourLivre.map(item => ({title:item, description: ""}))
+
+  res.send(list)
 })
 
 /**
@@ -92,16 +136,41 @@ router.post('/get-hours', async (req, res) => {
  * 
  */
 router.post('/save-date-time-appointment', async (req, res) => {
-  const free = await db.verifyDateHoursFree(req.body)
-  let appointment = 'Hora não disponível'
-  if(free.length == 0)
-    appointment = await db.saveDateTimeAppointment(req.body)
   
+  const finalAgendamento = [
+      "10 minutos antes"
+      ,"20 minutos antes"
+      ,"30 minutos antes"
+      ,"40 minutos antes"
+      ,"1 hora antes"
+      ,"Não quero Ser lembrado"
+    ]
+  
+  const free = await db.verifyDateHoursFree(req.body)
+  let appointment = 'Hora não disponível, por favor selecione outro horário'
+  if(free.length == 0){
+    const retorno = await db.saveDateTimeAppointment(req.body)
+
+    appointment = {
+      type : "list"
+      ,listContent : `OK, dia ${req.body.data} às ${req.body.hora} será seu agendamento, vamos definir um lembrete, pra que você não esqueça?`
+      ,listAction : "Ver Opções ⏰"
+      ,listItens : [{title:"LEMBRE-ME", rows:[]}]
+      ,listTitle : ""
+      ,listFooter : "Selecione um item"
+    }
+
+    appointment.listItens[0].rows = finalAgendamento.map(item => ({title:item, description: ""}))
+  }
+  
+  // Verifica se a data Agendada é igual ao dia atual
+  // Envia mensagem para o barbeiro com a lista atualizada do dia atual
   if(func.verifyCurrentDate(req.body.data))
     func.refresListBarber(req.body.whatsappTo)
 
   res.send(appointment)
 })
+
 
 /**
  * Endpoint salvar o lembrete

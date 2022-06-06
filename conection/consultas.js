@@ -18,7 +18,7 @@ const verifyClientExist = async (wpp) => {
     console.log(err)
 
   } finally{
-    return consulta.rows.length > 0 ? true : false
+    return consulta.rows
   }
 }
 
@@ -256,6 +256,25 @@ where b.whatsapp = '${whatsappTo}' and a.datamarcada = to_char(now(), 'DD/MM/YYY
   }
 }
 
+//Pegar dados do cliente pelo whatsapp
+const getBarber = async wpp => {
+  let consulta;
+  
+  const query = `select * from barbearias c where whatsapp = '${wpp}'`;
+  
+  try {
+
+    consulta = await db.query(query)
+    
+  } catch(err){
+
+    console.log(err)
+
+  } finally{
+    return consulta.rows
+  }
+}
+
 /*
 const deleteValues = async (id) => {
   const sqlValues = `DELETE FROM public.valores WHERE idvalor = ${id}`;
@@ -282,4 +301,5 @@ module.exports = {
   ,saveDateTimeAppointment
   ,insertReminderMe
   ,getAllDateTimeAppointment
+  ,getBarber
 }

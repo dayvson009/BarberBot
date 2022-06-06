@@ -9,7 +9,7 @@ const https = require('https');
 const fileUpload = require('express-fileupload');
 const axios = require('axios');
 const mime = require('mime-types');
-const port = process.env.PORT || 3019;
+const port = process.env.PORT || 3020;
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
@@ -17,8 +17,8 @@ const io = socketIO(server);
 const httpAgent = new http.Agent({keepAlive: true});
 const httpsAgent = new https.Agent({keepAlive: true});
 
-const URL_BARBERBOT = 'http://10.0.0.102:3010'
-const URL_DIALOGFLOW = 'http://10.0.0.102:3020'
+const URL_BARBERBOT = 'http://10.0.0.100:3010'
+const URL_DIALOGFLOW = 'http://10.0.0.100:3030'
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -164,49 +164,63 @@ const sendDialogFlow = async (mensagem, numero) => {
 
 }
 
-const requestGET = async (phone, msg) => {
+const requestGET = async (msg) => {
 
   const urlGet = getContentTag(msg,'GET')
 
-  const number = phoneNumberFormatter(phone);
-
+  let message = await axios.get(urlGet, { httpAgent });
+  message = message.data
   
-  const message = await axios.get(urlGet);
-
   console.log(message)
-  console.log(message.data)
-
   console.log("Enviando GET", new Date())
-  await client.sendMessage(number, message.data)
+
+  if (message.type == "list"){
+    
+    let {type,listContent,listAction,listItens,listTitle,listFooter} = message
+
+    message = new List(listContent,listAction,listItens,listTitle,listFooter);
+  }else{
+    message = ''
+  }
+
+  return message
 
 }
 
-const requestPOST = async (phone, msg) => {
+const requestPOST = async (msg,whatsappFrom, whatsappTo) => {
 
   const urlPost = getContentTag(msg,'POST')
-  const dataPost = getContentTag(msg,'POSTDATA')
+  const dataPost = JSON.parse(getContentTag(msg,'POSTDATA'))
 
-  const number = phoneNumberFormatter(phone);
+  Object.assign(dataPost,{"whatsappFrom": whatsappFrom})
+  Object.assign(dataPost,{"whatsappTo": whatsappTo})
 
-  const message = await axios.post(urlPost, dataPost);
+  let message = await axios.post(urlPost, dataPost, { httpAgent });
+  message = message.data
+
+  if (message.type == "list"){
+    
+    let {type,listContent,listAction,listItens,listTitle,listFooter} = message
+
+    message = new List(listContent,listAction,listItens,listTitle,listFooter);
+  }
   
-  console.log(message)
-  console.log(message.data)
-
+  console.log("MENSAGEM POST A ENIAR", message)
   console.log("Enviando POST", new Date())
-  await client.sendMessage(number, message.data)
+
+  return message
 
 }
 
 /**
  * Função para criar botão de whatsapp
  */
-const sendButton = async (phone, msg) => {
+const sendButton = async (msg) => {
 
-  const buttonContent = getContentTag(msg,'buttonContent')
-  const buttonTitle = getContentTag(msg,'buttonTitle') || ""
-  const buttonFooter = getContentTag(msg,'buttonFooter') || ""
-  const buttons = getContentTag(msg,'button') || ""
+  const buttonContent = getContentTag(msg,'BUTTONCONTENT')
+  const buttonTitle = getContentTag(msg,'BUTTONTITLE') || ""
+  const buttonFooter = getContentTag(msg,'BUTTONFOOTER') || ""
+  const buttons = getContentTag(msg,'BUTTON') || ""
 
   const listButtons = typeof buttons != 'string' ? buttons.map(item => ({body:item})) : [{body:buttons}]
 
@@ -215,31 +229,31 @@ const sendButton = async (phone, msg) => {
   const number = phoneNumberFormatter(phone);
   console.log("Enviando Botão", new Date())
   
-  await client.sendMessage(number, button)
+  return button
 
 }
 
 /**
  * Função para criar Lista de whatsapp
  */
-const sendList = async (phone, msg) => {
+const sendList = async (msg) => {
 
-  const listContent = getContentTag(msg,'listContent')
-  const listAction = getContentTag(msg,'listAction') || "Clique aqui"
+  const listContent = getContentTag(msg,'LISTCONTENT')
+  const listAction = getContentTag(msg,'LISTACTION') || "Clique aqui"
   const listHeaderItens = getContentTag(msg,'listHeaderItens') || ""
-  const lists = getContentTag(msg,'list') || ""
-  const listSub = getContentTag(msg,'listSub') || false
-  const listTitle = getContentTag(msg,'listTitle') || ""
-  const listFooter = getContentTag(msg,'listFooter') || ""
+  const lists = getContentTag(msg,'LIST') || ""
+  const listSub = getContentTag(msg,'LISTSUB') || false
+  const listTitle = getContentTag(msg,'LISTTITLE') || ""
+  const listFooter = getContentTag(msg,'LISTFOOTER') || ""
 
   const listItens = [{title:listHeaderItens, rows:[]}]
 
   listItens[0].rows = typeof lists != 'string' ? lists.map((item, index) => ({title:item, description: listSub[index] || ""})) : [{title:lists, description: listSub[0] || ""}]
   const list = new List(listContent,listAction,listItens,listTitle,listFooter);
 
-  const number = phoneNumberFormatter(phone);
   console.log("Enviando Lista", new Date())
-  await client.sendMessage(number, list)
+
+  return list
 }
 
 /**
@@ -247,14 +261,13 @@ const sendList = async (phone, msg) => {
  */
 const sendImage = async (phone, msg) => {
 
-  const imageUrl = getContentTag(msg,'imageUrl')
-  const imageCaption = getContentTag(msg,'imageCaption') || ""
-
-  const number = phoneNumberFormatter(phone);
+  const imageUrl = getContentTag(msg,'IMAGEURL')
+  const imageCaption = getContentTag(msg,'IMAGECAPTION') || ""
 
   const media = MessageMedia.fromFilePath(imageUrl);
   console.log("Enviando imagem", new Date())
-  await client.sendMessage(number, media, { caption: imageCaption })
+
+  await client.sendMessage(phone, media, { caption: imageCaption })
 };
 
 
@@ -274,52 +287,106 @@ app.get('/paused', async (req, res) => {
   res.send(sistemaAtivo)
 })
 
+const adicionaNove = phone => (phone+"")[4] != "9" ? phone.substr(0,4)+"9"+phone.substr(4) : phone;
 
 /* onmessage */
 client.on('message', async msg => {
   console.log(msg.type)
-  // TODO adicionar as validações nescessárias (verificar se a mensagem não é de grupo msg.type == group seilá)
-  if (msg.type === 'chat' && msg.body !== null && sistemaAtivo){
-    
+
+  if ((msg.type === 'chat' || msg.type == 'list_response') && msg.body !== null && sistemaAtivo){
+
     const chat = await msg.getChat()
     const contact = await msg.getContact()
     const name = contact.name || contact.pushname
-  
+    const phoneTo = msg.to.split('@')[0]
+    const wtppFromComNove = adicionaNove(contact.number)
+    const wtppToComNove = adicionaNove(phoneTo)
+
+    // console.log("============== MESSAGE ===================")
+    // console.log(msg)
+    // console.log("============== CONTACT ===================")
+    // console.log(contact)
+    // console.log("================ CHAT ====================")
+    // console.log(chat)
+
+    const saveMsg = {
+        whatsappFrom: wtppFromComNove
+        , whatsappTo: wtppToComNove
+        , mensagem: msg.body
+        , dispositivo: msg.deviceType
+      }
+    axios.post(`${URL_BARBERBOT}/save-message`, saveMsg, { httpAgent })
+
+
+    const finalAgendamento = [
+      "10 minutos antes"
+      ,"20 minutos antes"
+      ,"30 minutos antes"
+      ,"40 minutos antes"
+      ,"1 hora antes"
+      ,"Não quero Ser lembrado"
+    ]
+
+    if(finalAgendamento.includes(msg.body)){
+      msg.body = 'sair'
+      client.sendMessage(msg.from, "Ok, Agendamento concluído.")
+    }
+
+
+
     // Verifica se o cliente já está na lista de clientes temporária e no banco
-    if(!listaClientesDoDia.includes(contact.number)){
+    if(!listaClientesDoDia.includes(wtppFromComNove)) {
       
-      listaClientesDoDia.push(contact.number)
+      listaClientesDoDia.push(wtppFromComNove)
   
       const data = {
         nome: name
-        ,whatsapp: contact.number
+        ,whatsapp: wtppFromComNove
         ,dispositivo: msg.deviceType
       }
 
       const verifyClient = await axios.post(`${URL_BARBERBOT}/verify-client`, data, { httpAgent })
-      console.log(verifyClient)
-      if(verifyClient){
-        msg.body = `BemVindoDeVolta Nome ${name}` // Entra no fluxo do dialogFlow Agendamento
+      const barber = await axios.get(`${URL_BARBERBOT}/get-barber?barber=${wtppToComNove}`, { httpAgent })
+      console.log(wtppToComNove)
+      console.log(barber.data)
+      if(verifyClient.data != false){
+        msg.body = `Bem-vindo de volta ${verifyClient.data}` // Entra no fluxo do dialogFlow Agendamento
       }else{
-        msg.body = `NovoCliente Nome ${name}` // Entra no fluxo do dialogFlow e manda uma variável do NOME
+        msg.body = `Olá Nome ${name} Barbearia ${barber.data}` // Entra no fluxo do dialogFlow e manda uma variável do NOME
       }
 
     }
-  
-    
-    console.log("============== MESSAGE ===================")
-    console.log(msg)
-    console.log("============== CONTACT ===================")
-    // console.log(contact)
-    console.log("================ CHAT ====================")
-    // console.log(chat)
 
+    
+    console.log(msg.body)
+    if(msg.body.includes("sair")){
+      console.log("TESTE SAIR", msg.body.includes("sair"))
+      listaClientesDoDia.splice(listaClientesDoDia.indexOf(wtppFromComNove),1)
+    }
+
+    
+    
     //Tempo de espera de enviando mensagem
     chat.sendStateTyping()    
     await sleep(3000)
     chat.clearState()
-    /*
-    const responseDialogFLow = `${await sendDialogFlow(msg.body, contact.number)}`
+
+    const whatsappTo = phoneNumberFormatter(msg.from);
+    
+    const RespDialogFlow = await sendDialogFlow(msg.body, contact.number)
+    const fluxo = RespDialogFlow.fluxo
+    const responseDialogFLow = RespDialogFlow.response;
+
+    const fimFluxo = [
+      "Agendamento.Cliente - no"
+      ,"sair"
+    ]
+
+    if(fimFluxo.includes(fluxo)){
+      listaClientesDoDia.splice(listaClientesDoDia.indexOf(wtppFromComNove),1)
+    }
+
+    console.log("lista Temporária ", listaClientesDoDia)
     
     console.log(`--------------------Nova Mensagem--------------------`);
     console.log(`Mensagem do cliente ${contact.number}: ${msg.body}`);
@@ -327,15 +394,23 @@ client.on('message', async msg => {
     console.log(responseDialogFLow);
     
     // const responseDialogFLowOneLine = textOneLine(responseDialogFLow)
+    if(responseDialogFLow.includes('<imagemCreate>')){
+     await sendImage(whatsappTo, responseDialogFLow)
+    }else{
+      responseDialogFLow.includes('<text>') ? await client.sendMessage(whatsappTo, await getContentTag(responseDialogFLow,'text')) : ""
+      responseDialogFLow.includes('<buttonCreate>') ? await client.sendMessage(whatsappTo, await sendButton(responseDialogFLow))  : ""
+      responseDialogFLow.includes('<listCreate>') ? await client.sendMessage(whatsappTo, await sendList(responseDialogFLow))  : ""
+      responseDialogFLow.includes('<GET>') ? await client.sendMessage(whatsappTo, await requestGET(responseDialogFLow, wtppFromComNove, wtppToComNove))  : ""
+      responseDialogFLow.includes('<POST>') ? await client.sendMessage(whatsappTo, await requestPOST(responseDialogFLow, wtppFromComNove, wtppToComNove))  : ""
+      !responseDialogFLow.includes("</") ? await client.sendMessage(whatsappTo, responseDialogFLow) : ""
 
-    responseDialogFLow.includes('<imagemCreate>') ? await sendImage(msg.from, responseDialogFLow) : "";
-    responseDialogFLow.includes('<text>')         ? msg.reply(msg.from, getContentTag(responseDialogFLow,'text')) : ""
-    responseDialogFLow.includes('<buttonCreate>') ? await sendButton(msg.from, responseDialogFLow) : ""
-    responseDialogFLow.includes('<listCreate>')   ? await sendList(msg.from, responseDialogFLow) : ""
-    responseDialogFLow.includes('<GET>')   ? await requestGET(msg.from, responseDialogFLow) : ""
-    responseDialogFLow.includes('<POST>')   ? await requestPOST(msg.from, responseDialogFLow) : ""
-    !responseDialogFLow.includes("</") ? await client.sendMessage(msg.from, responseDialogFLow) : ""
-    */
+      const RespMsg = {
+         whatsappFrom: wtppFromComNove
+         ,mensagem: responseDialogFLow
+      }
+      axios.post(`${URL_BARBERBOT}/save-response`, RespMsg, { httpAgent })
+    }
+    
     console.log('-----------------------------------------------------')
   }
 });

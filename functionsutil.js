@@ -1,6 +1,6 @@
 const db = require('./conection/consultas')
 // const axios = require('axios')
-const URLWHATSAPP = 'http://10.0.0.102:3019'
+const URLWHATSAPP = 'http://10.0.0.100:3020'
 
 const updateStatusMessages = () => {
   console.log('cuidado ao olhar pra cima')
