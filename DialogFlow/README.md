@@ -48,26 +48,30 @@ Pra que serve cada uma delas:
 Para criar uma lista precisamos inserir a sequencia abaixo de código, lembrando que só (Listcontent e list) que é Obrigatório, caso os outros não existam ele vai ignorar e deixar em branco
 
 ```
+<listCreate>
 <listContent>...</listContent> ---------- Mensagem do whatsapp antes da lista
 <listAction>...</listAction> ------------ Botão que aciona a lista ex: clique aqui
 <listHeaderItens>...</listHeaderItens> -- Titúlo em verde quando abre a lista, abaixo do Título
-<list>...</list> ------------------------ Item da lista
+<list>ITEM 1</list> ------------------------ Item da lista
+<list>ITEM 2</list> ------------------------ Item da lista
 <listSub>...</listSub> ------------------ SubItem da lista
 <listTitle>...</listTitle> -------------- Título mensagem da Lista
 <listFooter>...</listFooter> ------------ Rodapé mensagem da Lista
-
+</listCreate>
 ```
 
 ```
 Lista limpa:
+<listCreate>
 <listContent></listContent>
 <listAction></listAction>
 <listHeaderItens></listHeaderItens>
 <list></list>
+<list></list>
 <listSub></listSub>
 <listTitle></listTitle>
 <listFooter></listFooter>
-
+</listCreate>
 ```
 
 ## Criando botões
@@ -75,18 +79,24 @@ Lista limpa:
 Para criar botões precisamos inserir a sequencia abaixo de código, lembrando que só (ButtonContent e button) que é Obrigatório, caso os outros não existam ele vai ignorar e deixar em branco
 
 ```
+<buttonCreate>
 <buttonContent>...</buttonContent>-- Mensagem do whatsapp antes dos botões
 <buttonTitle>...</buttonTitle>------ Título da mensagem
 <buttonFooter>...</buttonFooter>---- Texto do Rodapé
 <button>...</button>---------------- Botões
+<button>...</button>---------------- Botões
+</buttonCreate>
 ```
 
 ```
 Lista limpa:
+<buttonCreate>
 <buttonContent></buttonContent>
 <buttonTitle></buttonTitle>
 <buttonFooter></buttonFooter>
 <button></button>
+<button></button>
+</buttonCreate>
 ```
 
 ## Criando Imagens
@@ -94,14 +104,18 @@ Lista limpa:
 Para enviar imagem adicionamos ao texto as tags abaixo, lembrando que só (imageUrl) que é Obrigatório, caso os outros não existam ele vai ignorar e deixar em branco
 
 ```
+<imagemCreate>
 <imageUrl>...</imageUrl>----------- Caminho da imagem contida na pasta ./media
 <imageCaption>...</imageCaption>--- Mensagem que fica abaixo da imagem
+</imagemCreate>
 ```
 
 ```
 Lista limpa:
+<imagemCreate>
 <imageUrl></imageUrl>
 <imageCaption></imageCaption>
+</imagemCreate>
 ```
 
 

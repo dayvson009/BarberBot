@@ -172,9 +172,11 @@ const getHourReminder = ({hora,lembrete}) => {
 
 }
 
+// Verifica se a data Agendada é igual ao dia atual
 const verifyCurrentDate = (data, currentDate = new Date()) => 
   data == currentDate.toLocaleString('pt-BR',{dateStyle:'short'})
 
+// Envia mensagem para o barbeiro com a lista atualizada do dia atual
 const refresListBarber = async (whatsappTo) => {
   const agendamentos = await db.getAllDateTimeAppointment(whatsappTo)
   let dataMessage;
