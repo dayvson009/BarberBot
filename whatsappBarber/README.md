@@ -101,3 +101,9 @@ Vamos implementar o metódo POST e GET também já vindo do Dialogflow da seguin
 ```
 
 Dessa forma conseguiremos obter o retorno esperado de uma outra aplicação qualquer, tornando essa aqui independente facilitando futuras manutenções
+
+## Atualizar código
+
+- [ ] Separar toda parte funcional da parte lógica
+- [ ] Mudar para que verifique se cliente já existe, e chamar só um fluxo agora
+- [ ] Verificar se quando chamo mais de um endpoint ele obedece

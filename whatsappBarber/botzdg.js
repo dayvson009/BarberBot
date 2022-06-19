@@ -14,6 +14,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+
 const httpAgent = new http.Agent({keepAlive: true});
 const httpsAgent = new https.Agent({keepAlive: true});
 
@@ -317,23 +318,6 @@ client.on('message', async msg => {
       }
     axios.post(`${URL_BARBERBOT}/save-message`, saveMsg, { httpAgent })
 
-
-    const finalAgendamento = [
-      "10 minutos antes"
-      ,"20 minutos antes"
-      ,"30 minutos antes"
-      ,"40 minutos antes"
-      ,"1 hora antes"
-      ,"Não quero Ser lembrado"
-    ]
-
-    if(finalAgendamento.includes(msg.body)){
-      msg.body = 'sair'
-      client.sendMessage(msg.from, "Ok, Agendamento concluído.")
-    }
-
-
-
     // Verifica se o cliente já está na lista de clientes temporária e no banco
     if(!listaClientesDoDia.includes(wtppFromComNove)) {
       
@@ -347,24 +331,14 @@ client.on('message', async msg => {
 
       const verifyClient = await axios.post(`${URL_BARBERBOT}/verify-client`, data, { httpAgent })
       const barber = await axios.get(`${URL_BARBERBOT}/get-barber?barber=${wtppToComNove}`, { httpAgent })
-      console.log(wtppToComNove)
-      console.log(barber.data)
+      
       if(verifyClient.data != false){
-        msg.body = `Bem-vindo de volta ${verifyClient.data}` // Entra no fluxo do dialogFlow Agendamento
+        msg.body = `opcoes Boasvindas ${verifyClient.data}. ${barber.data}` // Envia o nome do banco de dados salvo
       }else{
-        msg.body = `Olá Nome ${name} Barbearia ${barber.data}` // Entra no fluxo do dialogFlow e manda uma variável do NOME
+        msg.body = `opcoes Boasvindas ${name}. ${barber.data}` // Envia o nome que fica no whatsapp
       }
 
     }
-
-    
-    console.log(msg.body)
-    if(msg.body.includes("sair")){
-      console.log("TESTE SAIR", msg.body.includes("sair"))
-      listaClientesDoDia.splice(listaClientesDoDia.indexOf(wtppFromComNove),1)
-    }
-
-    
     
     //Tempo de espera de enviando mensagem
     chat.sendStateTyping()    
@@ -377,12 +351,13 @@ client.on('message', async msg => {
     const fluxo = RespDialogFlow.fluxo
     const responseDialogFLow = RespDialogFlow.response;
 
-    const fimFluxo = [
-      "Agendamento.Cliente - no"
-      ,"sair"
+    const fluxos = [
+      "sair"
     ]
 
-    if(fimFluxo.includes(fluxo)){
+    console.log(`Fluxo Atual: ${fluxo}`)
+
+    if(msg.body.includes("sair") || msg.body.includes("finalizar") || fluxos.includes(fluxo)){
       listaClientesDoDia.splice(listaClientesDoDia.indexOf(wtppFromComNove),1)
     }
 

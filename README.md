@@ -138,7 +138,9 @@ ou não naquela data específica.
 
 **Cliente**
 
+- [ ] Criar endpoint para pegar os serviços da barbearia
 - [ ] Escolher o serviço
+- [ ] Criar endpoint para salvar tudo de uma vez
 - [ ] Adicionar mais botões ou listas no dialogflow (evitando erros desnecessários)
 - [x] Quando finalizar um agendamento perguntar se quer realizar um novo Agendamento
 - [x] Sempre deixar claro que ele pode SAIR do chatdeagendamento a qualquer momento
@@ -152,6 +154,7 @@ ou não naquela data específica.
 - [ ] O barbeiro também pode optar por ver agenda do dia ou de uma data especifica
 - [ ] Adicionar ao banco de dados tabela `Barbeiro` um [ATIVO] = S ou N
 - [ ] Adicionar ao banco de dados tabela `Agendamento` uma chave secundária [CODSERVICO]
+- [ ] Adicionar ao banco de dados tabela `Barbearia` um campo linkgooglemaps
 
 **Geral**
 
@@ -164,6 +167,8 @@ ou não naquela data específica.
 - [ ] Testar com 10 pessoas diferentes realizando um agendamento
 - [ ] Se tudo ocorreu como esperado! Lançar a Versão 1.0.0
 - [ ] Lançar Versão e comercializar
+- [ ] Melhorar o Fluxo do DialogFlow
+- [ ] Atualizar o fluxo com listas e botões (se puder)
 
 **Vendas**
 
