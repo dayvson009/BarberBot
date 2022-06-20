@@ -1,14 +1,23 @@
 {
 	"id": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
-	"name": "barberbot]",
+	"name": "barberbot",
 	"description": "",
 	"order": [
 		"33bcc8f7-907e-d028-0364-4e5be6b85026",
+		"d6a99164-bd2d-0a57-fdf9-52fc72b5a4a3",
 		"9fb344df-794d-2179-a757-73979665fb4d",
 		"9bc20e03-4cc4-bdae-10a3-72763795c0ea",
 		"afb23a3f-b7d6-731a-b125-9786be54f08a",
 		"91e5d6c2-d3fa-0e64-0b58-6eda581a1cb1",
-		"f32f1d2d-b833-6b92-67e7-4efa0b6ba1a1"
+		"35de778a-669a-2a7e-098a-d6ae3896a2d4",
+		"f6a4891d-59cf-053a-4925-0caa48127094",
+		"10357b2f-dd4a-4c23-a82e-e62d03c15dfc",
+		"f32f1d2d-b833-6b92-67e7-4efa0b6ba1a1",
+		"8c3fcef8-3b74-6e44-9a61-ec747135ea6a",
+		"aa67857c-7326-0bfb-c7b7-a276889a10c7",
+		"82531c44-691c-5007-dbdf-b5ccee9f6240",
+		"ad2337f6-fe97-4400-ced8-98bbdfc278ed",
+		"d30aafb9-ff82-7f7f-e942-2254f582245c"
 	],
 	"folders": [],
 	"folders_order": [],
@@ -16,6 +25,35 @@
 	"owner": "110196",
 	"public": false,
 	"requests": [
+		{
+			"id": "10357b2f-dd4a-4c23-a82e-e62d03c15dfc",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/get-location",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1655688230289,
+			"name": "Pegar Localização",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{\t\n\t\"whatsappTo\":\"5581984319706\"\n\t,\"mensagem\":\"Seu endereço é\"\n}"
+		},
 		{
 			"id": "33bcc8f7-907e-d028-0364-4e5be6b85026",
 			"headers": "Content-Type: application/json\n",
@@ -46,33 +84,122 @@
 			"rawModeData": "{\n\t\"nome\": \"Vinicius\"\n\t,\"whatsapp\": \"5581983012863\"\n\t,\"dispositivo\": \"android\"\n}"
 		},
 		{
-			"id": "91e5d6c2-d3fa-0e64-0b58-6eda581a1cb1",
-			"headers": "",
-			"headerData": [],
-			"url": "localhost:3010/get-datas?whatsapp=5581984319706",
-			"queryParams": [
+			"id": "35de778a-669a-2a7e-098a-d6ae3896a2d4",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
 				{
-					"key": "whatsapp",
-					"value": "5581984319706",
-					"equals": true,
+					"key": "Content-Type",
+					"value": "application/json",
 					"description": "",
 					"enabled": true
 				}
 			],
+			"url": "localhost:3010/get-datas",
+			"queryParams": [],
 			"preRequestScript": null,
 			"pathVariables": {},
 			"pathVariableData": [],
-			"method": "GET",
-			"data": null,
-			"dataMode": "params",
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1653232209448,
+			"time": 1654434301092,
+			"name": "buscar serviços para lista",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "91e5d6c2-d3fa-0e64-0b58-6eda581a1cb1",
+			"rawModeData": "{\t\n\t\"whatsappTo\":\"5581984319706\"\n\t,\"mensagem\":\"Mensagem do DialogFlow\"\n}"
+		},
+		{
+			"id": "82531c44-691c-5007-dbdf-b5ccee9f6240",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/send-list-scheduling",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653752911630,
+			"name": "Enviar lista agendamentos para barbearia",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{ \n\t\"whatsappTo\": \"5581984319706\"\n}\n"
+		},
+		{
+			"id": "8c3fcef8-3b74-6e44-9a61-ec747135ea6a",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/save-date-time-appointment",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653752913555,
+			"name": "Salvar Agendamento",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{ \n\t\"whatsappFrom\": \"5581983012863\"\n\t,\"whatsappTo\": \"5581984319706\"\n\t,\"data\": \"28/05/2022\"\n\t,\"hora\": \"09:50\"\n}"
+		},
+		{
+			"id": "91e5d6c2-d3fa-0e64-0b58-6eda581a1cb1",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/get-datas",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1654434301092,
 			"name": "pegar datas disponiveis para agendamento",
 			"description": "",
 			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
-			"responses": []
+			"responses": [],
+			"rawModeData": "{\t\n\t\"whatsappTo\":\"5581984319706\"\n\t,\"mensagem\":\"Mensagem do DialogFlow\"\n}"
 		},
 		{
 			"id": "9bc20e03-4cc4-bdae-10a3-72763795c0ea",
@@ -125,12 +252,70 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1653236102530,
+			"time": 1654464848769,
 			"name": "Atualizar nome Cliente",
 			"description": "",
 			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
 			"responses": [],
-			"rawModeData": "{\n\t\"nome\": \"Thalita silva\"\n\t,\"whatsapp\": \"5581983012863\"\n}"
+			"rawModeData": "{\n\t\"nome\": \"Thalita silva\"\n\t,\"whatsappTo\": \"5581983012863\"\n}"
+		},
+		{
+			"id": "aa67857c-7326-0bfb-c7b7-a276889a10c7",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/reminder-me",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653745545611,
+			"name": "Adicionar lembrete ao agendamento",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{ \n\t\"whatsappFrom\": \"5581983012863\"\n\t,\"whatsappTo\": \"5581984319706\"\n\t,\"data\": \"30/05/2022\"\n\t,\"hora\": \"09:51\"\n\t,\"lembrete\" : \"50\"\n}"
+		},
+		{
+			"id": "ad2337f6-fe97-4400-ced8-98bbdfc278ed",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://10.0.0.102:3019/send-message",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1653758642606,
+			"name": "Whatsapp Send message",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{ \n\t\"whatsapp\": \"5581984319706\"\n\t,\"message\": \"Teste\"\n}\n"
 		},
 		{
 			"id": "afb23a3f-b7d6-731a-b125-9786be54f08a",
@@ -162,6 +347,80 @@
 			"rawModeData": "{\r\n   \"whatsappFrom\": \"5581983012863\"\r\n   ,\"mensagem\": \"Não foda-se\"\r\n}"
 		},
 		{
+			"id": "d30aafb9-ff82-7f7f-e942-2254f582245c",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://10.0.0.101:3020/paused?ativar=s",
+			"queryParams": [
+				{
+					"key": "ativar",
+					"value": "s",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1654400276763,
+			"name": "Whatsapp Ativar mensagem",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{ \n\t\"whatsapp\": \"5581984319706\"\n\t,\"message\": \"Teste\"\n}\n"
+		},
+		{
+			"id": "d6a99164-bd2d-0a57-fdf9-52fc72b5a4a3",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/get-barber?barber=5581984319706",
+			"queryParams": [
+				{
+					"key": "barber",
+					"value": "5581984319706",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1654408424794,
+			"name": "Pegar nome barbearia",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"rawModeData": "{\n\t\"nome\": \"Vinicius\"\n\t,\"whatsapp\": \"5581983012863\"\n\t,\"dispositivo\": \"android\"\n}"
+		},
+		{
 			"id": "f32f1d2d-b833-6b92-67e7-4efa0b6ba1a1",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -183,12 +442,43 @@
 			"tests": null,
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1653235870977,
+			"time": 1654401672471,
 			"name": "pegar horario livre agendamento",
 			"description": "",
 			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
 			"responses": [],
-			"rawModeData": "{ \n\t\"whatsappTo\": \"5581984319706\"\n\t,\"data\": \"30/05/2022\"\n\t,\"dia\": \"segunda\"\n}"
+			"rawModeData": "{ \n\t\"whatsappTo\": \"5581984319706\"\n\t,\"data\": \"30/05/2022\"\n\t,\"dia\": \"segunda\"\n\t,\"mensagem\": \"Mensagem DialogFlow\"\n}"
+		},
+		{
+			"id": "f6a4891d-59cf-053a-4925-0caa48127094",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "localhost:3010/get-datas",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1654434301092,
+			"name": "Mostrar Serviços",
+			"description": "",
+			"collectionId": "1e87e9d5-4e5c-6032-cbe0-311ec60fe3ce",
+			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "35de778a-669a-2a7e-098a-d6ae3896a2d4",
+			"rawModeData": "{\t\n\t\"whatsappTo\":\"5581984319706\"\n\t,\"mensagem\":\"Mensagem do DialogFlow\"\n}"
 		}
 	]
 }
