@@ -127,6 +127,37 @@ router.post('/get-services', async (req, res) => {
   res.send(list)
 })
 
+/**
+ * Endpoint para buscar os serviços oferecidos
+ */
+router.post('/get-location', async (req, res) => {
+  
+  let {whatsappTo, mensagem} = req.body
+
+  console.log(req.body)
+
+  const localizacao = await db.getLocation(whatsappTo)
+
+  console.log(localizacao)
+
+  const list = {
+    type : "list"
+    ,listContent : mensagem+localizacao[0].endereco+'\n\n'+localizacao[0].linkmaps
+    ,listAction : "Escolha uma opção"
+    ,listItens : [{title:"Escolha uma opção abaixo", rows:[]}]
+    ,listTitle : ""
+    ,listFooter : "Selecione um item"
+  }
+
+  list.listItens[0].rows = ['Voltar ao menu Principal', 'Sair'].map(item => ({title:item, description: ""}))
+
+  console.log(list)
+
+  console.log("Enviando Lista", new Date())
+
+  res.send(list)
+})
+
 
 /**
  * Endpoint para buscar as datas disponivéis do agendamento

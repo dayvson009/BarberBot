@@ -1,4 +1,4 @@
-# BarberBot 0.21.2
+# BarberBot 0.22.0
 
 O sistema barberbot, é um sistema simples de agendamento, onde tudo é realizado através do whatsapp. O cliente consegue agendar, cancelar de forma fácil e rápida.
 O barbeiro por outro lado, consegue tempo e agilidade no seu negócio, podendo também cancelar, desativar, e ver a agenda do dia ou todos agendamentos
@@ -138,9 +138,9 @@ ou não naquela data específica.
 
 **Cliente**
 
-- [ ] Criar endpoint para pegar os serviços da barbearia
-- [ ] Escolher o serviço
-- [ ] Criar endpoint para salvar tudo de uma vez
+- [x] Criar endpoint para pegar os serviços da barbearia
+- [x] Escolher o serviço
+- [x] Criar endpoint para salvar tudo de uma vez
 - [ ] Adicionar mais botões ou listas no dialogflow (evitando erros desnecessários)
 - [x] Quando finalizar um agendamento perguntar se quer realizar um novo Agendamento
 - [x] Sempre deixar claro que ele pode SAIR do chatdeagendamento a qualquer momento

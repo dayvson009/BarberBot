@@ -149,6 +149,25 @@ const getServices = async whatsappTo => {
   }
 }
 
+const getLocation = async whatsappTo => {
+  let consulta;
+  
+  const query = `select b.endereco, b.linkmaps  
+  from barbearias b where b.whatsapp = '${whatsappTo}'`;
+  
+  try {
+
+    consulta = await db.query(query)
+    
+  } catch(err){
+
+    console.log(err)
+
+  } finally{
+    return consulta.rows
+  }
+}
+
 const getDateFree = async whatsappTo => {
   let consulta;
   
@@ -336,6 +355,7 @@ module.exports = {
   ,saveResponseMessage
   ,getServicesPrices
   ,getServices
+  ,getLocation
   ,getDateFree
   ,getFuncionamento
   ,getDayHoursFree
