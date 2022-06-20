@@ -1,10 +1,10 @@
-# BarberBot 0.20.2
+# BarberBot 0.21.2
 
 O sistema barberbot, é um sistema simples de agendamento, onde tudo é realizado através do whatsapp. O cliente consegue agendar, cancelar de forma fácil e rápida.
 O barbeiro por outro lado, consegue tempo e agilidade no seu negócio, podendo também cancelar, desativar, e ver a agenda do dia ou todos agendamentos
 
 ```text
-Na versão Atual, cada barbeiro é uma barbearia, porém na próxima versão deverá ser escolhido a opção de qual barbeiro escolher e de qual barbearia ele trabalha atualmente, precisa por um campo (STATUS) na tabela Barbeiro, para saber se ele está ativo ou não.
+Na versão Atual, cada barbeiro é uma barbearia, porém na próxima versão deverá ser escolhido a opção de qual barbeiro escolher e de qual barbearia ele trabalha atualmente.
 ```
 
 O projeto encontra-se na Heroku `barberbot01@gmail.com`.
@@ -152,9 +152,9 @@ ou não naquela data específica.
 - [ ] Endpoint para cancelar agendamento
 - [ ] Endpoint para atualizar agendamentos
 - [ ] O barbeiro também pode optar por ver agenda do dia ou de uma data especifica
-- [ ] Adicionar ao banco de dados tabela `Barbeiro` um [ATIVO] = S ou N
-- [ ] Adicionar ao banco de dados tabela `Agendamento` uma chave secundária [CODSERVICO]
-- [ ] Adicionar ao banco de dados tabela `Barbearia` um campo linkgooglemaps
+- [x] Adicionar ao banco de dados tabela `Barbeiro` um [ATIVO] = S ou N
+- [x] Adicionar ao banco de dados tabela `Agendamento` uma chave secundária [CODSERVICO]
+- [x] Adicionar ao banco de dados tabela `Barbearias` um campo linkgooglemaps
 
 **Geral**
 
@@ -167,8 +167,9 @@ ou não naquela data específica.
 - [ ] Testar com 10 pessoas diferentes realizando um agendamento
 - [ ] Se tudo ocorreu como esperado! Lançar a Versão 1.0.0
 - [ ] Lançar Versão e comercializar
-- [ ] Melhorar o Fluxo do DialogFlow
-- [ ] Atualizar o fluxo com listas e botões (se puder)
+- [x] Melhorar o Fluxo do DialogFlow
+- [ ] Atualizar o fluxo com listas e botões (se puder usar botões)
+- [ ] Adicionar Emojis no fluxo
 
 **Vendas**
 

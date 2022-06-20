@@ -109,6 +109,46 @@ const saveResponseMessage = async ({mensagem, whatsappFrom}) => {
   }
 }
 
+const getServicesPrices = async whatsappTo => {
+  let consulta;
+  
+  const query = `select concat('*R$ ', s.preco, '* - ', s.nomeservico) nomeservico  from servico s 
+inner join barbearias b on b.codbarbearia = s.codbarbearia 
+where b.whatsapp = '${whatsappTo}'`;
+  
+  try {
+
+    consulta = await db.query(query)
+    
+  } catch(err){
+
+    console.log(err)
+
+  } finally{
+    return consulta.rows
+  }
+}
+
+const getServices = async whatsappTo => {
+  let consulta;
+  
+  const query = `select s.nomeservico from servico s 
+  inner join barbearias b on b.codbarbearia = s.codbarbearia 
+  where b.whatsapp = '${whatsappTo}'`;
+  
+  try {
+
+    consulta = await db.query(query)
+    
+  } catch(err){
+
+    console.log(err)
+
+  } finally{
+    return consulta.rows
+  }
+}
+
 const getDateFree = async whatsappTo => {
   let consulta;
   
@@ -294,6 +334,8 @@ module.exports = {
   ,updateClient
   ,saveMessageChat
   ,saveResponseMessage
+  ,getServicesPrices
+  ,getServices
   ,getDateFree
   ,getFuncionamento
   ,getDayHoursFree
