@@ -67,61 +67,61 @@ ou não naquela data específica.
     
     ![msg 1 - Já possui cadastro](https://user-images.githubusercontent.com/8366179/168482225-60093526-48d0-4d49-ae61-a1a071860ccc.JPG)
     
-    2.2.2 - Segue pra etapa (3)
-    
-    3 - [Endpoint - pegar Serviços] -> {NOME_CLIENTE} Vamos lá, Qual serviço será feito hoje?
-    
-    3.1 - Mostra Lista de Serviços para escolher
-        * Cabelo
-        * Barba
-        * Bigode
-        * Cabelo + Barba
-        * Cabelo + Bigode
-        * Barba + Bigode
-        * Cabelo + Bigode + Barba
+2.2.2 - Segue pra etapa (3)
 
-    4 - [Endpoint - pegar Datas Disponíveis] -> {NOME_CLIENTE} Vamos lá, qual melhor dia para o agendamento, Confira na lista abaixo os dias disponíveis
-    
-    ![msg 2](https://user-images.githubusercontent.com/8366179/168482226-5f1a985d-e126-480c-a1c9-502eb69b99d0.JPG)
-    
-    4.1 - Mostra lista de datas disponíveis de acordo com o dia de funcionamento da barbearia e os dias que estão disponíveis
-        * 19/06/2022
-        * 20/06/2022
-        * 25/06/2022
-        * 26/06/22
-    
-    4.2 - Ok, data $data agendada, está correto ou quer mudar?
-        
-        4.2.1 - *mudar* volta para etapa (4)
-        
-        4.2.2 - *correto* segue pra etapa (5)
+3 - [Endpoint - pegar Serviços] -> {NOME_CLIENTE} Vamos lá, Qual serviço será feito hoje?
 
-    5 - [Endpoint - pegar Horas Disponíveis] -> No dia {DATA_ESCOLHIDA}, qual melhor horáirio?\n Confira a lista dos horários disponíveis abaixo
-    
-    ![msg 3](https://user-images.githubusercontent.com/8366179/168482227-e51b4f24-1ebb-41f0-a95c-eaf463a2ba75.JPG)
-    
-    5.1 - Mostra lista de horários disponíveis no sistema, referente a data escolhida
-        * 08:00
-        * 08:40
-        * 09:20
-        * 14:20
-        * 15:00
+3.1 - Mostra Lista de Serviços para escolher
+    * Cabelo
+    * Barba
+    * Bigode
+    * Cabelo + Barba
+    * Cabelo + Bigode
+    * Barba + Bigode
+    * Cabelo + Bigode + Barba
 
-    6 - Confirma que seu agendamento está concluído, e pergunta se vc quer ser lembrado
-    
-    ![msg 4](https://user-images.githubusercontent.com/8366179/168482228-ced00617-523d-48fa-97a2-0d477ddf977e.JPG)
-    
-    6.1 - OK, dia {DATA_ESCOLHIDA} às {HORA_ESCOLHIDA} será seu agendamento, vamos definir um lembrete, pra que você não esqueça?    
-    
-    ![msg 5](https://user-images.githubusercontent.com/8366179/168482229-0da12d0d-b933-4007-8c47-e9fd60591a42.JPG)
-    
-    6.2 - Aqui mostra uma lista para lembrete com opções de ser lembrando:
-        * 10 minutos antes
-        * 20 minutos antes
-        * 30 minutos antes
-        * 40 minutos antes
-        * 1 hora antes
-        * Não quero Ser lembrado
+4 - [Endpoint - pegar Datas Disponíveis] -> {NOME_CLIENTE} Vamos lá, qual melhor dia para o agendamento, Confira na lista abaixo os dias disponíveis
+
+![msg 2](https://user-images.githubusercontent.com/8366179/168482226-5f1a985d-e126-480c-a1c9-502eb69b99d0.JPG)
+
+4.1 - Mostra lista de datas disponíveis de acordo com o dia de funcionamento da barbearia e os dias que estão disponíveis
+    * 19/06/2022
+    * 20/06/2022
+    * 25/06/2022
+    * 26/06/22
+
+4.2 - Ok, data $data agendada, está correto ou quer mudar?
+
+    4.2.1 - *mudar* volta para etapa (4)
+
+    4.2.2 - *correto* segue pra etapa (5)
+
+5 - [Endpoint - pegar Horas Disponíveis] -> No dia {DATA_ESCOLHIDA}, qual melhor horáirio?\n Confira a lista dos horários disponíveis abaixo
+
+![msg 3](https://user-images.githubusercontent.com/8366179/168482227-e51b4f24-1ebb-41f0-a95c-eaf463a2ba75.JPG)
+
+5.1 - Mostra lista de horários disponíveis no sistema, referente a data escolhida
+    * 08:00
+    * 08:40
+    * 09:20
+    * 14:20
+    * 15:00
+
+6 - Confirma que seu agendamento está concluído, e pergunta se vc quer ser lembrado
+
+![msg 4](https://user-images.githubusercontent.com/8366179/168482228-ced00617-523d-48fa-97a2-0d477ddf977e.JPG)
+
+6.1 - OK, dia {DATA_ESCOLHIDA} às {HORA_ESCOLHIDA} será seu agendamento, vamos definir um lembrete, pra que você não esqueça?    
+
+![msg 5](https://user-images.githubusercontent.com/8366179/168482229-0da12d0d-b933-4007-8c47-e9fd60591a42.JPG)
+
+6.2 - Aqui mostra uma lista para lembrete com opções de ser lembrando:
+    * 10 minutos antes
+    * 20 minutos antes
+    * 30 minutos antes
+    * 40 minutos antes
+    * 1 hora antes
+    * Não quero Ser lembrado
 
 7 - Ao escolher a hora ou não recebe uma mensagem de finalizado e uma de sair
 
