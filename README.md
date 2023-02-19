@@ -37,35 +37,35 @@ ou não naquela data específica.
 
 **Início**
 
-    1.0 - Cliente inicia conversa
+1.0 - Cliente inicia conversa
 
-    2 - [Endpoint - Verifica se é Cliente] Se o whatsapp do cliente já está salvo no banco ou não
+2 - [Endpoint - Verifica se é Cliente] Se o whatsapp do cliente já está salvo no banco ou não
 
-    2.1 - (Não está no banco de dados)
-    
-    2.1.1 - Olá {NOME_CLIENTE}, Seja bem vindo a {NOME_BARBEARIA}, posso lhe chamar de {NOME_CLIENTE}?
-   
-   ![msg 1 - 1º Acesso](https://user-images.githubusercontent.com/8366179/168482224-408f3f98-9fea-44b8-b9d3-d58f1f21945d.JPG)
-    
-    2.1.2 - SIM - Segue pra etapa (3)
-    
-    2.1.3 - NÃO
-        
-    2.1.3.1 - Então como devo lhe chamar?
-        
-    2.1.3.2 - Cliente: FULANO
-        
-    2.1.3.3 - OK {NOVO_NOME_CLIENTE}, salvei seu novo nome, podemos continuar?
-        
-    2.1.3.4 - NÃO -> Volta pra etapa (2.1.3)
-        
-    2.1.3.5 - SIM -> Segue pra etapa (3)
+2.1 - (Não está no banco de dados)
 
-    2.2 - (Já está no banco de dados)
-    
-    2.2.1 - Oi $nome, que bom ver você novamente. 💈 Lembrando que a qualquer momento você pode digitar *SAIR* para encerrar! Vamos fazer um novo agendamento?
-    
-    ![msg 1 - Já possui cadastro](https://user-images.githubusercontent.com/8366179/168482225-60093526-48d0-4d49-ae61-a1a071860ccc.JPG)
+2.1.1 - Olá {NOME_CLIENTE}, Seja bem vindo a {NOME_BARBEARIA}, posso lhe chamar de {NOME_CLIENTE}?
+
+![msg 1 - 1º Acesso](https://user-images.githubusercontent.com/8366179/168482224-408f3f98-9fea-44b8-b9d3-d58f1f21945d.JPG)
+
+2.1.2 - SIM - Segue pra etapa (3)
+
+2.1.3 - NÃO
+
+2.1.3.1 - Então como devo lhe chamar?
+
+2.1.3.2 - Cliente: FULANO
+
+2.1.3.3 - OK {NOVO_NOME_CLIENTE}, salvei seu novo nome, podemos continuar?
+
+2.1.3.4 - NÃO -> Volta pra etapa (2.1.3)
+
+2.1.3.5 - SIM -> Segue pra etapa (3)
+
+2.2 - (Já está no banco de dados)
+
+2.2.1 - Oi $nome, que bom ver você novamente. 💈 Lembrando que a qualquer momento você pode digitar *SAIR* para encerrar! Vamos fazer um novo agendamento?
+
+![msg 1 - Já possui cadastro](https://user-images.githubusercontent.com/8366179/168482225-60093526-48d0-4d49-ae61-a1a071860ccc.JPG)
     
 2.2.2 - Segue pra etapa (3)
 
